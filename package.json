@@ -7,7 +7,7 @@
   "unityRelease": "0b5",
  
   "dependencies": {
-    "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git"
+    "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git#3.2.0"
  },
  "keywords": [
     "keyword1",
