@@ -8,6 +8,13 @@
  
   "dependencies": {
  },
+  "samples": [
+    {
+      "displayName": "ServiceProvider",
+      "description": "Contains init provider",
+      "path": "Samples~/SampleMySphere"
+    }
+  ],
  "keywords": [
     "keyword1",
     "keyword2",
