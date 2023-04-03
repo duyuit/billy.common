@@ -1,28 +1,20 @@
 {
-  "name": "com.billy.common",
+  "name": "com.lifter.common",
   "version": "0.0.1",
-  "displayName": "Billy Common",
-  "description": "Bill package constain common code",
+  "displayName": "Lifter Common",
+  "description": "Lifter common code",
   "unity": "2019.1",
   "unityRelease": "0b5",
- 
   "dependencies": {
     "com.unity.ads.ios-support": "1.0.0"
  },
-  "samples": [
-    {
-      "displayName": "ServiceProvider",
-      "description": "Contains init provider",
-      "path": "Samples~/SampleMySphere"
-    }
-  ],
  "keywords": [
     "keyword1",
     "keyword2",
     "keyword3"
   ],
   "author": {
-    "name": "Billy",
+    "name": "TheLifter",
     "email": "duykkxm97@gmail.com"
   }
 }
