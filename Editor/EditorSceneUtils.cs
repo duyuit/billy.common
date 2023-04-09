@@ -5,28 +5,26 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public class SceneUtils
+public class EditorSceneUtils
 {
-    [MenuItem("SceneUtils/Scene 1")]
-    public static void SplashScene()
+    [MenuItem("SceneUtils/Scene 1 %q")]
+    public static void OpenScene1()
     {
-        EditorSceneManager.OpenScene(EditorBuildSettings.scenes[0].path);
+        OpenSceneWithSaveConfirm(EditorBuildSettings.scenes[0].path);
     }
 
-    [MenuItem("SceneUtils/Scene 2")]
-    public static void MenuScene()
+    [MenuItem("SceneUtils/Scene 2 %w")]
+    public static void OpenScene2()
     {
-        EditorSceneManager.OpenScene(EditorBuildSettings.scenes[1].path);
+        OpenSceneWithSaveConfirm(EditorBuildSettings.scenes[1].path);
     }
 
-    [MenuItem("SceneUtils/Scene 3")]
-
-    public static void GameScene()
+    [MenuItem("SceneUtils/Scene 3 %e")]
+    public static void OpenScene3()
     {
-        EditorSceneManager.OpenScene(EditorBuildSettings.scenes[2].path);
-
+        OpenSceneWithSaveConfirm(EditorBuildSettings.scenes[2].path);
     }
-    
+
     [MenuItem("SceneUtils/Run Game %&r")]
     public static void Run()
     {
@@ -36,11 +34,11 @@ public class SceneUtils
             RunGameAsync();
             return;
         }
-        
+
         RunGame();
     }
- 
-    async static void RunGameAsync ()
+
+    static async void RunGameAsync()
     {
         await Task.Delay(1000);
         RunGame();
@@ -48,11 +46,11 @@ public class SceneUtils
 
     private static void RunGame()
     {
-        openSceneWithSaveConfirm(EditorBuildSettings.scenes[0].path);
+        OpenSceneWithSaveConfirm(EditorBuildSettings.scenes[0].path);
         EditorApplication.isPlaying = true;
     }
-    
-    public static void openSceneWithSaveConfirm(string scenePath)
+
+    private static void OpenSceneWithSaveConfirm(string scenePath)
     {
         // Refresh first to cause compilation and include new assets
         AssetDatabase.Refresh();

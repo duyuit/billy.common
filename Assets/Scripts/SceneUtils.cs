@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneHelper : MonoBehaviour
+public class SceneUtils : MonoBehaviour
 {
     public void LoadScene(string sceneName)
     {

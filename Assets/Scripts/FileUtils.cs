@@ -1,26 +1,11 @@
 using System;
 using System.IO;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+
 using UnityEngine;
 
-public static class FileHelper
+public static class FileUtils
 {
-#if UNITY_EDITOR
-    [MenuItem("FileHelper/Open persistentDataPath folder")]
-    private static void OpenPersistentDataPath()
-    {
-        EditorUtility.RevealInFinder(Application.persistentDataPath);
-    }
 
-    [MenuItem("FileHelper/Clear all PlayerPrefs")]
-    private static void ClearAllPlayerPrefs()
-    {
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save();
-    }
-#endif
 
     /// <summary>
     /// Load File
