@@ -24,12 +24,17 @@ namespace BlitzyUI.UIExample
             buttonD.onClick.AddListener(HandleButtonDClicked);
         }
 
-        public override void OnPush(Data data)
+        public override void OnPush(DataPopup dataPopup)
         {
             headerLabel.text = "Click on a button...";
 
             // Be sure to call PushFinished to signal the end of the push.
             PushFinished();
+        }
+
+        public override void OnPush(params object[] customParams)
+        {
+            
         }
 
         public override void OnPop()
@@ -74,10 +79,10 @@ namespace BlitzyUI.UIExample
 
         private void DisplayPopup (string message)
         {
-            var screenData = new Screen.Data();
+            var screenData = new Screen.DataPopup();
             screenData.Add("message", message);
 
-            UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, "ExamplePopupScreen", null);
+            // UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, "ExamplePopupScreen", null);
         }
     }
 }

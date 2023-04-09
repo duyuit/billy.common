@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Search;
 
 namespace BlitzyUI
 {
@@ -16,14 +17,15 @@ namespace BlitzyUI
 
         private abstract class QueuedScreen
         {
-            public BlitzyUI.Screen.Id id;
+            public string id;
         }
 
 
         private class QueuedScreenPush : QueuedScreen
         {
-            public BlitzyUI.Screen.Data data;
+            public BlitzyUI.Screen.DataPopup DataPopup;
             public string prefabName;
+            public object[] customParams;
             public PushedDelegate callback;
 
             public override string ToString()
@@ -44,7 +46,7 @@ namespace BlitzyUI
         }
 
         public delegate void PushedDelegate (Screen screen);
-        public delegate void PoppedDelegate (Screen.Id id);
+        public delegate void PoppedDelegate (string id);
 
         public static UIManager Instance { get; private set; }
 
@@ -62,7 +64,7 @@ namespace BlitzyUI
         private Dictionary<string, Screen> _cache;
         private Queue<QueuedScreen> _queue;
         private List<Screen> _stack;
-        private HashSet<BlitzyUI.Screen.Id> _stackIdSet;
+        private HashSet<string> _stackIdSet;
         private State _state;
 
         private PushedDelegate _activePushCallback;
@@ -111,9 +113,9 @@ namespace BlitzyUI
         /// Queue the screen to be pushed onto the screen stack. 
         /// Callback will be invoked when the screen is pushed to the stack.
         /// </summary>
-        public void QueuePush (BlitzyUI.Screen.Id id, BlitzyUI.Screen.Data data, string prefabName = null, PushedDelegate callback = null)
+        public void QueuePush (string id, BlitzyUI.Screen.DataPopup dataPopup, PushedDelegate callback = null)
         {
-            string prefab = prefabName ?? id.defaultPrefabName;
+            string prefab = id;
             #if PRINT_QUEUE
             DebugPrintQueue(string.Format("[UIManager] QueuePush id: {0}, prefabName: {1}", id, prefab));
             #endif
@@ -132,7 +134,7 @@ namespace BlitzyUI
 
             QueuedScreenPush push = new QueuedScreenPush();
             push.id = id;
-            push.data = data;
+            push.DataPopup = dataPopup;
             push.prefabName = prefab;
             push.callback = callback;
 
@@ -145,12 +147,47 @@ namespace BlitzyUI
             if (CanExecuteNextQueueItem())
                 ExecuteNextQueueItem();
         }
+        
+        public void QueuePush(string id, PushedDelegate callback = null, params object[] customParams)
+        {
+            string prefab = id;
+#if PRINT_QUEUE
+            DebugPrintQueue(string.Format("[UIManager] QueuePush id: {0}, prefabName: {1}", id, prefab));
+#endif
+
+            if (GetScreen(id) != null)
+            {
+                Debug.LogWarning(string.Format("Screen {0} already exists in the stack. Ignoring push request.", id));
+                return;
+            }
+
+            //if (ScreenWillExist(id))
+            //{
+            //    Debug.LogWarning(string.Format("Screen {0} will exist in the stack after the queue is fully executed. Ignoring push request.", id));
+            //    return;
+            //}
+
+            QueuedScreenPush push = new QueuedScreenPush();
+            push.id = id;
+            push.customParams = customParams;
+            push.prefabName = prefab;
+            push.callback = callback;
+
+            _queue.Enqueue(push);
+
+#if PRINT_QUEUE
+            DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}, Frame: {1}", push, Time.frameCount));
+#endif
+
+            if (CanExecuteNextQueueItem())
+                ExecuteNextQueueItem();
+        }
 
         /// <summary>
         /// Queue the screen to be popped from the screen stack. This will pop all screens on top of it as well.
         /// Callback will be invoked when the screen is reached, or popped if 'include' is true.
         /// </summary>
-        public void QueuePopTo (BlitzyUI.Screen.Id id, bool include, PoppedDelegate callback = null)
+        public void QueuePopTo (string id, bool include, PoppedDelegate callback = null)
         {
             #if PRINT_QUEUE
             DebugPrintQueue(string.Format("[UIManager] QueuePopTo id: {0}, include: {1}", id, include));
@@ -245,7 +282,7 @@ namespace BlitzyUI
             return null;
         }
 
-        public Screen GetScreen (BlitzyUI.Screen.Id id)
+        public Screen GetScreen (string id)
         {
             int count = _stack.Count;
             for (int i = 0; i < count; i++)
@@ -257,7 +294,7 @@ namespace BlitzyUI
             return null;
         }
 
-        public T GetScreen<T> (BlitzyUI.Screen.Id id) where T : BlitzyUI.Screen
+        public T GetScreen<T> (string id) where T : BlitzyUI.Screen
         {
             Screen screen = GetScreen(id);
             return (T)screen;
@@ -367,7 +404,12 @@ namespace BlitzyUI
                 #endif
 
                 screenInstance.onPushFinished += HandlePushFinished;
-                screenInstance.OnPush(queuedPush.data);
+                if(queuedPush.DataPopup != null)
+                    screenInstance.OnPush(queuedPush.DataPopup);
+                else if (queuedPush.customParams != null)
+                {
+                    screenInstance.OnPush(queuedPush.customParams);
+                }
 
                 if (_queue.Count == 0)
                 {

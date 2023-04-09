@@ -14,10 +14,15 @@ namespace BlitzyUI
             // Run one-time setup operations here.
         }
 
-        public override void OnPush(Data data)
+        public override void OnPush(DataPopup dataPopup)
         {
             // Be sure to call PushFinished to signal the end of the push.
             PushFinished();
+        }
+
+        public override void OnPush(params object[] customParams)
+        {
+            
         }
 
         public override void OnPop()

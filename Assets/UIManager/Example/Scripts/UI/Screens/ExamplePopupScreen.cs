@@ -18,12 +18,17 @@ namespace BlitzyUI.UIExample
             okButton.onClick.AddListener(HandleOkClicked);
         }
 
-        public override void OnPush(Data data)
+        public override void OnPush(DataPopup dataPopup)
         {
-            messageLabel.text = data.Get<string>("message");
+            messageLabel.text = dataPopup.Get<string>("message");
 
             // Be sure to call PushFinished to signal the end of the push.
             PushFinished();
+        }
+
+        public override void OnPush(params object[] customParams)
+        {
+            
         }
 
         public override void OnPop()
