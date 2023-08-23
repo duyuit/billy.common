@@ -97,10 +97,10 @@ namespace BlitzyUI
             _state = State.Ready;
 
             // Remove any objects that may be lingering underneath the root.
-            foreach (Transform child in rootCanvas.transform)
-            {
-                Object.Destroy(child.gameObject);
-            }
+            // foreach (Transform child in rootCanvas.transform)
+            // {
+            //     Object.Destroy(child.gameObject);
+            // }
         }
 
         private void OnDestroy() {
@@ -181,6 +181,27 @@ namespace BlitzyUI
 
             if (CanExecuteNextQueueItem())
                 ExecuteNextQueueItem();
+        }
+
+        public void QueuePop(string id, PoppedDelegate callback = null)
+        {
+            foreach (var screen in _stack)
+            {
+                if (screen.id == id)
+                {
+                    var queuedPop = new QueuedScreenPop();
+                    queuedPop.id = screen.id;
+                    queuedPop.callback = callback;
+
+                    _queue.Enqueue(queuedPop);
+#if PRINT_QUEUE
+                    DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}", queuedPop));
+#endif
+                }
+            }
+
+            if (CanExecuteNextQueueItem())
+                ExecuteNextQueueItem(); 
         }
 
         /// <summary>

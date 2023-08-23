@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 
 namespace BlitzyUI
 {
-    [RequireComponent(typeof(Canvas))]
     public abstract class Screen : MonoBehaviour
     {
         // public class Id
